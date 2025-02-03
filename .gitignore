@@ -1,0 +1,12 @@
+# IDE Files
+.idea/
+.vscode/
+
+# Generated mocks
+**/mock_*.go
+
+# Binaries
+bin/
+tmp/
+
+.env

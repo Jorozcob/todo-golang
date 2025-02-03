@@ -1,0 +1,32 @@
+services:
+  ginplayground:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ginplayground-server
+    env_file:
+      - .env
+    ports:
+      - "${SERVER_PORT}:${SERVER_PORT}"
+    depends_on:
+      db:
+        condition: service_healthy
+  db:
+    image: postgres:17.2-alpine3.21
+    container_name: postgres-todo-app
+    env_file:
+      - .env
+    volumes:
+      - db-data:/var/lib/postgresql/data
+      - ./scripts/db:/docker-entrypoint-initdb.d
+    ports:
+      - "${DATABASE_PORT}:${DATABASE_PORT}"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${DATABASE_USER} -d ${DATABASE_NAME}" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+volumes:
+  db-data:
